@@ -3,9 +3,10 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
-import { calculateGoals } from "../lib/calculateGoals";
+
+import { calculateGoals } from "../lib/goalCalculator";
 import { signAccessTokenFor } from "../lib/jtw";
-import { HttpResponse } from "../types/Http";
+import { HttpRequest, HttpResponse } from "../types/Http";
 import { badRequest, conflict, created } from "../utils/Http";
 
 const schema = z.object({
@@ -23,7 +24,7 @@ const schema = z.object({
 });
 
 export class SignUpController {
-  static async handle({ body }): Promise<HttpResponse> {
+  static async handle({ body }: HttpRequest): Promise<HttpResponse> {
     const { success, error, data } = schema.safeParse(body);
     if (!success) {
       return badRequest({ errors: error.issues });
