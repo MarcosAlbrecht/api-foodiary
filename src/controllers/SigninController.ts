@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
+import { signAccessTokenFor } from "../lib/jtw";
 import { HttpResponse } from "../types/Http";
 import { badRequest, ok, unauthorized } from "../utils/Http";
 
@@ -37,10 +38,10 @@ export class SignInController {
       return unauthorized({ error: "Invalid credentials" });
     }
 
-    console.log(user.password);
+    const accessToken = signAccessTokenFor(user.id);
 
     return ok({
-      accessToken: "signup: token de acesso",
+      accessToken,
       data,
     });
   }

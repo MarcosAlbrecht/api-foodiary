@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import z from "zod";
 import { db } from "../db";
 import { usersTable } from "../db/schema";
+import { calculateGoals } from "../lib/calculateGoals";
+import { signAccessTokenFor } from "../lib/jtw";
 import { HttpResponse } from "../types/Http";
 import { badRequest, conflict, created } from "../utils/Http";
 
@@ -39,6 +41,16 @@ export class SignUpController {
     }
 
     const { account, ...rest } = data;
+
+    const goals = calculateGoals({
+      activityLevel: rest.activityLevel,
+      birthDate: new Date(rest.birthDate),
+      gender: rest.gender,
+      goal: rest.goal,
+      height: rest.height,
+      weight: rest.weight,
+    });
+
     const hashedPassword = await hash(account.password, 8);
 
     const [user] = await db
@@ -46,18 +58,17 @@ export class SignUpController {
       .values({
         ...rest,
         ...account,
+        ...goals,
         password: hashedPassword,
-        calories: 0,
-        carbohydrates: 0,
-        fats: 0,
-        proteins: 0,
       })
       .returning({
         id: usersTable.id,
       });
 
+    const accessToken = signAccessTokenFor(user.id);
+
     return created({
-      userId: user.id,
+      accessToken,
     });
   }
 }
