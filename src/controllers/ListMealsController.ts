@@ -32,6 +32,7 @@ export class ListMealsController {
       },
       where: and(
         eq(mealsTable.userId, userId),
+        eq(mealsTable.status, "success"),
         gte(mealsTable.createdAt, data.date),
         lte(mealsTable.createdAt, endDate)
       ),
