@@ -1,6 +1,6 @@
 <!--
 
-PT2 01:36:00
+PT2 02:11:45
 
 title: 'AWS Simple HTTP Endpoint example in NodeJS'
 description: 'This template demonstrates how to make a simple HTTP API with Node.js running on AWS Lambda and API Gateway using the Serverless Framework.'
