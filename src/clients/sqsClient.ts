@@ -1,3 +1,3 @@
 import { SQSClient } from "@aws-sdk/client-sqs";
 
-export const sqlClient = new SQSClient();
+export const sqsClient = new SQSClient();
