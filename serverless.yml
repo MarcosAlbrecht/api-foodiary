@@ -22,7 +22,7 @@ provider:
         - Effect: Allow
           Action:
             - s3:PutObject
-          # Resource: !GetAtt UploadsBucket.Arn
+            - s3:GetObject
           Resource: !Sub "${UploadsBucket.Arn}/*"
         - Effect: Allow
           Action: sqs:SendMessage
@@ -83,6 +83,13 @@ functions:
           event: s3:ObjectCreated:*
           existing: true
           forceDeploy: true
+
+  processMeal:
+    handler: src/functions/processMeal.handler
+    events:
+      - sqs:
+          arn: !GetAtt MealsQueue.Arn
+          batchSize: 1
 
 resources:
   Resources:
